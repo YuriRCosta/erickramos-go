@@ -7,37 +7,37 @@ import (
 
 var rotasRetentorComando = []Rota{
 	{
-		URI:                "/retentorcomando",
+		URI:                "/retentorComando",
 		Metodo:             http.MethodPost,
 		Funcao:             controllers.CriarRetentorComando,
 		RequerAutenticacao: true,
 	},
 	{
-		URI:                "/retentorcomando",
+		URI:                "/retentorComando",
 		Metodo:             http.MethodGet,
 		Funcao:             controllers.BuscarRetentoresComando,
 		RequerAutenticacao: true,
 	},
 	{
-		URI:                "/retentorcomando/{retentorcomandoID}",
+		URI:                "/retentorComando/{retentorComandoID}",
 		Metodo:             http.MethodGet,
 		Funcao:             controllers.BuscarRetentorComandoPorID,
 		RequerAutenticacao: true,
 	},
 	{
-		URI:                "/retentorcomando/{retentorcomandoID}",
+		URI:                "/retentorComando/{retentorComandoID}",
 		Metodo:             http.MethodPut,
 		Funcao:             controllers.AtualizarRetentorComando,
 		RequerAutenticacao: true,
 	},
 	{
-		URI:                "/retentorcomando/{retentorcomandoID}",
+		URI:                "/retentorComando/{retentorComandoID}",
 		Metodo:             http.MethodDelete,
 		Funcao:             controllers.DeletarRetentorComando,
 		RequerAutenticacao: true,
 	},
 	{
-		URI:                "/retentorcomando/nome/{nomeRetentorComando}",
+		URI:                "/retentorComando/nome/{nomeRetentorComando}",
 		Metodo:             http.MethodGet,
 		Funcao:             controllers.BuscarRetentoresComandoPorNome,
 		RequerAutenticacao: true,

@@ -21,6 +21,8 @@ func Configurar(r *mux.Router) *mux.Router {
 	rotas = append(rotas, rotaLogin)
 	rotas = append(rotas, rotasSelos...)
 	rotas = append(rotas, rotasRetentorComando...)
+	rotas = append(rotas, rotasRetentorValvula...)
+	rotas = append(rotas, rotasValvulas...)
 
 	for _, rota := range rotas {
 
