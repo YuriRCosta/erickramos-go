@@ -35,13 +35,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	repositorio := repositories.NovoRepositorioDeUsuarios(db)
-	usuarioSalvoNoBanco, err := repositorio.BuscarPorEmail(usuario.Email)
+	usuarioSalvoNoBanco, err := repositorio.BuscarPorUsername(usuario.Username)
 	if err != nil {
 		respostas.Erro(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	if err = security.VerificarSenha(usuarioSalvoNoBanco.Senha, usuario.Senha); err != nil {
+	if err = security.VerificarSenha(usuarioSalvoNoBanco.Password, usuario.Password); err != nil {
 		respostas.Erro(w, http.StatusUnauthorized, err)
 		return
 	}

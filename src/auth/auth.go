@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"erickramos-go/src/config"
 	"errors"
 	"fmt"
 	"net/http"

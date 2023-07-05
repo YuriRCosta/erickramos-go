@@ -17,7 +17,8 @@ type Rota struct {
 
 // Configurar vai receber um router e retornar um router com as rotas configuradas
 func Configurar(r *mux.Router) *mux.Router {
-	rotas := rotaLogin
+	rotas := rotasUsuarios
+	rotas = append(rotas, rotaLogin)
 
 	for _, rota := range rotas {
 
