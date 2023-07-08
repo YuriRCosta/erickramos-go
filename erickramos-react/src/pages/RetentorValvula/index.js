@@ -4,18 +4,18 @@ import { Link, useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import Navbar from "../../components/Navbar";
 
-export default function RetentorComando({ children }) {
-	const [retentoresComando, setRetentoresComando] = useState([]);
+export default function RetentorValvula({ children }) {
+	const [retentoresValvula, setRetentoresValvula] = useState([]);
 	const [nomePesquisa, setNomePesquisa] = useState("");
 	const accessToken = localStorage.getItem("token");
 
-	async function fetchMoreRetentorComandos() {
-		const response = await api.get("retentorComando", {
+	async function fetchMoreRetentorValvulas() {
+		const response = await api.get("retentorValvula", {
 			headers: {
 				Authorization: `Bearer ${accessToken}`,
 			},
 		});
-		setRetentoresComando(response.data);
+		setRetentoresValvula(response.data);
 		console.log(response.data);
 	}
 
@@ -25,7 +25,7 @@ export default function RetentorComando({ children }) {
 
 	const handlePesquisar = () => {
 		if (nomePesquisa) {
-			api.get(`/retentorComando/nome/${nomePesquisa}`, {
+			api.get(`/retentorValvula/nome/${nomePesquisa}`, {
 				headers: {
 					Authorization: `Bearer ${accessToken}`,
 				},
@@ -33,7 +33,7 @@ export default function RetentorComando({ children }) {
 				.then((response) => {
 					const resultado = response.data;
 					console.log(resultado);
-					setRetentoresComando(resultado);
+					setRetentoresValvula(resultado);
 				})
 				.catch((error) => {
 					console.error(error);
@@ -44,7 +44,7 @@ export default function RetentorComando({ children }) {
 	};
 
 	useEffect(() => {
-		fetchMoreRetentorComandos();
+		fetchMoreRetentorValvulas();
 	}, []);
 
 	return (
@@ -53,9 +53,8 @@ export default function RetentorComando({ children }) {
 			<div className="flex items-center bg-white justify-center h-screen">
 				<div className="max-w-md w-full p-6 bg-neutral-500 rounded-lg shadow-md text-center">
 					<h1 className="text-2xl font-semibold mb-4">
-						Retentores de Comando
+						Retentores de Valvula
 					</h1>
-
 					<div className="flex flex-col items-center">
 						<input
 							type="text"
@@ -72,7 +71,7 @@ export default function RetentorComando({ children }) {
 								Pesquisar
 							</button>
 							<button
-								onClick={fetchMoreRetentorComandos}
+								onClick={fetchMoreRetentorValvulas}
 								className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none"
 							>
 								Mostrar Todos
@@ -83,6 +82,9 @@ export default function RetentorComando({ children }) {
 					<table className="w-full">
 						<thead>
 							<tr>
+								<th className="py-2 text-center px-4 border-b">
+									Codigo
+								</th>
 								<th className="py-2 text-center px-4 border-b">
 									Cabecote
 								</th>
@@ -95,8 +97,11 @@ export default function RetentorComando({ children }) {
 							</tr>
 						</thead>
 						<tbody>
-							{retentoresComando.map((retentor) => (
+							{retentoresValvula.map((retentor) => (
 								<tr key={retentor.id}>
+									<td className="py-2 text-center px-4 border-b">
+										{retentor.codigo}
+									</td>
 									<td className="py-2 text-center px-4 border-b">
 										{retentor.nome}
 									</td>

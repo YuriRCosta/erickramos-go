@@ -6,7 +6,8 @@ import RetentorComando from "./pages/RetentorComando";
 const Routess = () => {
     return useRoutes([
         {path: '/', element: <Login/>},
-        {path: '/retentoresComando', element: <RetentorComando/>}
+        {path: '/retentoresComando', element: <RetentorComando/>},
+        {path: '/retentoresValvula', element: <RetentorValvula/>},
         ]
     );
 }

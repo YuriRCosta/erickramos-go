@@ -15,10 +15,10 @@ func main() {
 	r := router.Gerar()
 
 	c := cors.New(cors.Options{
-		AllowedMethods:       []string{"GET", "POST", "OPTIONS"},
+		AllowedMethods:       []string{"GET", "POST", "OPTIONS", "PUT", "DELETE"},
 		AllowedOrigins:       []string{"*"},
 		AllowCredentials:     true,
-		AllowedHeaders:       []string{"Content-Type", "Bearer", "Bearer ", "content-type", "Origin", "Accept"},
+		AllowedHeaders:       []string{"Content-Type", "Authorization", "Bearer ", "content-type", "Origin", "Accept"},
 		OptionsPassthrough:   true,
 		OptionsSuccessStatus: 200,
 	})

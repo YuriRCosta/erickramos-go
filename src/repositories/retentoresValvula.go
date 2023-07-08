@@ -41,7 +41,7 @@ func (repositorio RetentoresValvulaRepository) Criar(retentoresValvula models.Re
 // BuscarRetentoresValvula traz todos os retentoresValvula registrados no banco de dados
 func (repositorio RetentoresValvulaRepository) BuscarRetentoresValvula() ([]models.RetentorValvula, error) {
 	linhas, err := repositorio.db.Query(
-		"select id, nome, preco, qtd_estoque from retentores_valvulas",
+		"select id, codigo, nome, preco, qtd_estoque from retentores_valvulas",
 	)
 	if err != nil {
 		return nil, err
@@ -56,6 +56,7 @@ func (repositorio RetentoresValvulaRepository) BuscarRetentoresValvula() ([]mode
 
 		if err = linhas.Scan(
 			&retentorValvula.ID,
+			&retentorValvula.Codigo,
 			&retentorValvula.Nome,
 			&retentorValvula.Preco,
 			&retentorValvula.Qtd_estoque,
@@ -72,7 +73,7 @@ func (repositorio RetentoresValvulaRepository) BuscarRetentoresValvula() ([]mode
 // BuscarRetentoresValvulaPorID traz um retentoresValvula do banco de dados
 func (repositorio RetentoresValvulaRepository) BuscarRetentorValvulaPorID(ID uint64) (models.RetentorValvula, error) {
 	linha, err := repositorio.db.Query(
-		"select id, nome, preco, qtd_estoque from retentores_valvulas where id = ?",
+		"select id, codigo, nome, preco, qtd_estoque from retentores_valvulas where id = ?",
 		ID,
 	)
 	if err != nil {
@@ -86,6 +87,7 @@ func (repositorio RetentoresValvulaRepository) BuscarRetentorValvulaPorID(ID uin
 
 		if err = linha.Scan(
 			&retentorValvula.ID,
+			&retentorValvula.Codigo,
 			&retentorValvula.Nome,
 			&retentorValvula.Preco,
 			&retentorValvula.Qtd_estoque,
