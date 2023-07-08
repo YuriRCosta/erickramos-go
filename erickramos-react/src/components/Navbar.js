@@ -26,7 +26,7 @@ const Navbar = () => {
 								type="button"
 								className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-gray-700 text-sm font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
 							>
-								<Link href="/orcamento">
+								<Link to="/orcamento">
 									<div className="text-white font-medium hover:text-gray-300">
 										Orçamento
 									</div>
@@ -64,6 +64,27 @@ const Navbar = () => {
 										aria-labelledby="options-menu"
 									>
 										<Link
+											to="/cabecotes"
+											className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+											role="menuitem"
+										>
+											Cabecotes
+										</Link>
+										<Link
+											to="/comandos"
+											className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+											role="menuitem"
+										>
+											Comandos
+										</Link>
+										<Link
+											to="/juntas"
+											className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+											role="menuitem"
+										>
+											Juntas
+										</Link>
+										<Link
 											to="/retentoresComando"
 											className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
 											role="menuitem"
@@ -76,6 +97,20 @@ const Navbar = () => {
 											role="menuitem"
 										>
 											Retentor de Valvula
+										</Link>
+										<Link
+											to="/selos"
+											className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+											role="menuitem"
+										>
+											Selos
+										</Link>
+										<Link
+											to="/valvulas"
+											className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+											role="menuitem"
+										>
+											Válvulas
 										</Link>
 									</div>
 								</div>
