@@ -35,8 +35,16 @@ func Configurar(r *mux.Router) *mux.Router {
 			r.HandleFunc(rota.URI, middlewares.Logger(rota.Funcao)).Methods(rota.Metodo)
 		}
 
+		r.HandleFunc(rota.URI, OptionsHandler).Methods("OPTIONS")
 		r.HandleFunc(rota.URI, rota.Funcao).Methods(rota.Metodo)
 	}
 
 	return r
+}
+
+func OptionsHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Authorization")
+	w.WriteHeader(http.StatusOK)
 }

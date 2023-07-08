@@ -9,6 +9,7 @@ import (
 // JSON retorna uma resposta em JSON para a requisição
 func JSON(w http.ResponseWriter, statusCode int, dados interface{}) {
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 	w.WriteHeader(statusCode)
 
 	if dados != nil {

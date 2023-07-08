@@ -60,6 +60,7 @@ func BuscarRetentoresComando(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	respostas.JSON(w, http.StatusOK, retentoresComando)
 }
 
