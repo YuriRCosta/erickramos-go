@@ -15,6 +15,12 @@ var rotasSelos = []Rota{
 	{
 		URI:                "/selos",
 		Metodo:             http.MethodGet,
+		Funcao:             controllers.BuscarTodosSelos,
+		RequerAutenticacao: true,
+	},
+	{
+		URI:                "/selos/pagina/{pagina}",
+		Metodo:             http.MethodGet,
 		Funcao:             controllers.BuscarSelos,
 		RequerAutenticacao: true,
 	},
@@ -49,9 +55,9 @@ var rotasSelos = []Rota{
 		RequerAutenticacao: true,
 	},
 	{
-		URI:                "/selos/adicionar-estoque/{seloID}/{quantidade}",
+		URI:                "/selos/adicionar-estoque/{seloID}",
 		Metodo:             http.MethodPut,
 		Funcao:             controllers.AdicionarEstoque,
-		RequerAutenticacao: true,	
+		RequerAutenticacao: true,
 	},
 }

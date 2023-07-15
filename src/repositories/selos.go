@@ -38,10 +38,44 @@ func (repositorio Selos) Criar(selo models.Selo) (uint64, error) {
 	return uint64(ultimoIDInserido), nil
 }
 
-// BuscarSelos traz todos os selos registrados no banco de dados
-func (repositorio Selos) BuscarSelos() ([]models.Selo, error) {
+// BuscarTodos traz todos os selos registrados no banco de dados
+func (repositorio Selos) BuscarTodos() ([]models.Selo, error) {
 	linhas, err := repositorio.db.Query(
-		"select id, nome, preco, qtd_estoque, medida from selos",
+		"select id, nome, preco, qtd_estoque, medida from selos order by nome",
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer linhas.Close()
+
+	var selos []models.Selo
+
+	for linhas.Next() {
+		var selo models.Selo
+
+		if err = linhas.Scan(
+			&selo.ID,
+			&selo.Nome,
+			&selo.Preco,
+			&selo.Qtd_estoque,
+			&selo.Medida,
+		); err != nil {
+			return nil, err
+		}
+
+		selos = append(selos, selo)
+	}
+
+	return selos, nil
+}
+
+// BuscarSelos traz todos os selos registrados no banco de dados
+func (repositorio Selos) BuscarSelos(pagina int64) ([]models.Selo, error) {
+	offset := (pagina - 1) * 5
+
+	linhas, err := repositorio.db.Query(
+		"select id, nome, preco, qtd_estoque, medida from selos order by nome LIMIT 5 OFFSET ?",
+		offset,
 	)
 	if err != nil {
 		return nil, err
@@ -196,8 +230,42 @@ func (repositorio Selos) BuscarSeloPorMedida(medida string) ([]models.Selo, erro
 	return selos, nil
 }
 
+// BuscarSelosPaginacao busca selos no banco de dados com paginação
+func (repositorio Selos) BuscarSelosPaginacao(pagina int) ([]models.Selo, error) {
+	linhas, err := repositorio.db.Query(
+		"select * from selos limit 5 offset ?",
+		pagina,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer linhas.Close()
+
+	var selos []models.Selo
+
+	for linhas.Next() {
+
+		var selo models.Selo
+
+		if err = linhas.Scan(
+			&selo.ID,
+			&selo.Nome,
+			&selo.Preco,
+			&selo.Qtd_estoque,
+			&selo.Medida,
+		); err != nil {
+			return nil, err
+		}
+
+		selos = append(selos, selo)
+	}
+
+	return selos, nil
+}
+
+
 // AdicionarEstoque adiciona a quantidade de selos em estoque
-func (repositorio Selos) AdicionarEstoque(ID uint64, qtd_estoque uint64) error {
+func (repositorio Selos) AdicionarEstoque(ID uint64, selo models.Selo) error {
 	statement, err := repositorio.db.Prepare(
 		"update selos set qtd_estoque = qtd_estoque + ? where id = ?",
 	)
@@ -206,7 +274,7 @@ func (repositorio Selos) AdicionarEstoque(ID uint64, qtd_estoque uint64) error {
 	}
 	defer statement.Close()
 
-	if _, err = statement.Exec(qtd_estoque, ID); err != nil {
+	if _, err = statement.Exec(selo.Qtd_estoque, ID); err != nil {
 		return err
 	}
 

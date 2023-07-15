@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
 import api from "../../services/api";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import faFontAwesome from "@fortawesome/free-solid-svg-icons";
+import ReactPaginate from "react-paginate";
 
 export default function Selo() {
     const [selos, setSelos] = useState([]);
@@ -10,8 +9,15 @@ export default function Selo() {
     const [medidaPesquisa, setMedidaPesquisa] = useState("");
     const [nomePesquisa, setNomePesquisa] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [todosSelos, setTodosSelos] = useState([]);
+    const totalPages = Math.ceil(todosSelos.length / 5);
 
     const accessToken = localStorage.getItem("token");
+
+    const handlePageChange = ({ selected }) => {
+        carregarSelos(selected + 1);
+    };
 
     const openModal = () => {
         setModalVisible(true);
@@ -21,11 +27,23 @@ export default function Selo() {
         setModalVisible(false);
     };
 
-    async function carregarSelos() {
+    async function carregarTodosSelos() {
         setNomePesquisa("");
         setMedidaPesquisa("");
 
-        const response = await api.get("selos", {
+        const response = await api.get(`selos`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+        setTodosSelos(response.data);
+    }
+
+    async function carregarSelos(pagina) {
+        setNomePesquisa("");
+        setMedidaPesquisa("");
+
+        const response = await api.get(`selos/pagina/${pagina}`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
@@ -164,10 +182,12 @@ export default function Selo() {
         const qtd = prompt("Informe a quantidade a ser adicionada ao estoque:");
 
         if (qtd) {
-            const qtdInt = parseInt(qtd);
+            const novoSelo = {
+                qtd_estoque: parseInt(qtd),
+            };
 
-            if (qtdInt > 0) {
-                api.put(`selos/adicionar-estoque/${selo.id}/${qtdInt}`, {
+            if (qtd > 0) {
+                api.put(`selos/adicionar-estoque/${selo.id}`, novoSelo, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                     },
@@ -238,7 +258,8 @@ export default function Selo() {
     };
 
     useEffect(() => {
-        carregarSelos();
+        carregarTodosSelos();
+        carregarSelos(1);
     }, []);
 
     return (
@@ -400,6 +421,29 @@ export default function Selo() {
                             )}
                         </tbody>
                     </table>
+                    <ReactPaginate
+                        previousLabel={"Anterior"}
+                        nextLabel={"Próximo"}
+                        breakLabel={"..."}
+                        pageCount={totalPages}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={5}
+                        onPageChange={handlePageChange}
+                        containerClassName={"flex justify-center mt-4"}
+                        pageClassName={
+                            "py-1 px-3 cursor-pointer rounded-lg bg-gray-700 text-gray-700 mx-1"
+                        }
+                        activeClassName={"bg-blue-400 text-white"}
+                        previousClassName={
+                            "py-1 px-3 cursor-pointer rounded-lg bg-blue-600 text-gray-100"
+                        }
+                        nextClassName={
+                            "py-1 px-3 cursor-pointer rounded-lg bg-blue-600 text-gray-100"
+                        }
+                        disabledClassName={
+                            "py-1 px-3 rounded-lg bg-gray-700 text-gray-100 cursor-not-allowed"
+                        }
+                    />
                     <div className="flex justify-center mt-6">
                         <button
                             onClick={openModal}

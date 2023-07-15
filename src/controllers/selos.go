@@ -44,8 +44,8 @@ func CriarSelo(w http.ResponseWriter, r *http.Request) {
 	respostas.JSON(w, http.StatusCreated, selo)
 }
 
-// BuscarSelos busca todos os selos salvos no banco de dados
-func BuscarSelos(w http.ResponseWriter, r *http.Request) {
+// BuscarTodosSelos traz todos os selos salvos no banco de dados
+func BuscarTodosSelos(w http.ResponseWriter, r *http.Request) {
 	db, err := banco.Conectar()
 	if err != nil {
 		respostas.Erro(w, http.StatusInternalServerError, err)
@@ -54,7 +54,38 @@ func BuscarSelos(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	repositorio := repositories.NovoRepositorioDeSelos(db)
-	selos, err := repositorio.BuscarSelos()
+	selos, err := repositorio.BuscarTodos()
+	if err != nil {
+		respostas.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	respostas.JSON(w, http.StatusOK, selos)
+}
+
+// BuscarSelos busca todos os selos salvos no banco de dados
+func BuscarSelos(w http.ResponseWriter, r *http.Request) {
+	parametros := mux.Vars(r)
+	pagina, err := strconv.ParseInt(parametros["pagina"], 10, 64)
+	if err != nil {
+		respostas.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+    // Definir um valor padrão para a página e itensPorPagina se não forem fornecidos ou inválidos
+    if pagina <= 0 {
+        pagina = 1
+    }
+
+	db, err := banco.Conectar()
+	if err != nil {
+		respostas.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repositorio := repositories.NovoRepositorioDeSelos(db)
+	selos, err := repositorio.BuscarSelos(pagina)
 	if err != nil {
 		respostas.Erro(w, http.StatusInternalServerError, err)
 		return
@@ -204,8 +235,14 @@ func AdicionarEstoque(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	quantidade, err := strconv.ParseUint(parametros["quantidade"], 10, 64)
+	corpoRequisicao, err := ioutil.ReadAll(r.Body)
 	if err != nil {
+		respostas.Erro(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+
+	var selo models.Selo
+	if err = json.Unmarshal(corpoRequisicao, &selo); err != nil {
 		respostas.Erro(w, http.StatusBadRequest, err)
 		return
 	}
@@ -218,7 +255,7 @@ func AdicionarEstoque(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	repositorio := repositories.NovoRepositorioDeSelos(db)
-	if err = repositorio.AdicionarEstoque(seloID, quantidade); err != nil {
+	if err = repositorio.AdicionarEstoque(seloID, selo); err != nil {
 		respostas.Erro(w, http.StatusInternalServerError, err)
 		return
 	}
