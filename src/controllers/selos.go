@@ -194,3 +194,34 @@ func BuscarSeloPorMedida(w http.ResponseWriter, r *http.Request) {
 
 	respostas.JSON(w, http.StatusOK, selo)
 }
+
+// AdicionarEstoque adiciona uma quantidade de selos ao estoque
+func AdicionarEstoque(w http.ResponseWriter, r *http.Request) {
+	parametros := mux.Vars(r)
+	seloID, err := strconv.ParseUint(parametros["seloID"], 10, 64)
+	if err != nil {
+		respostas.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	quantidade, err := strconv.ParseUint(parametros["quantidade"], 10, 64)
+	if err != nil {
+		respostas.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := banco.Conectar()
+	if err != nil {
+		respostas.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repositorio := repositories.NovoRepositorioDeSelos(db)
+	if err = repositorio.AdicionarEstoque(seloID, quantidade); err != nil {
+		respostas.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	respostas.JSON(w, http.StatusNoContent, nil)
+}

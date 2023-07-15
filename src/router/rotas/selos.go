@@ -48,4 +48,10 @@ var rotasSelos = []Rota{
 		Funcao:             controllers.BuscarSeloPorMedida,
 		RequerAutenticacao: true,
 	},
+	{
+		URI:                "/selos/adicionar-estoque/{seloID}/{quantidade}",
+		Metodo:             http.MethodPut,
+		Funcao:             controllers.AdicionarEstoque,
+		RequerAutenticacao: true,	
+	},
 }

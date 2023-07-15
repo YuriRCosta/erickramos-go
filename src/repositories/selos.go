@@ -195,3 +195,20 @@ func (repositorio Selos) BuscarSeloPorMedida(medida string) ([]models.Selo, erro
 
 	return selos, nil
 }
+
+// AdicionarEstoque adiciona a quantidade de selos em estoque
+func (repositorio Selos) AdicionarEstoque(ID uint64, qtd_estoque uint64) error {
+	statement, err := repositorio.db.Prepare(
+		"update selos set qtd_estoque = qtd_estoque + ? where id = ?",
+	)
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err = statement.Exec(qtd_estoque, ID); err != nil {
+		return err
+	}
+
+	return nil
+}
