@@ -167,7 +167,7 @@ export default function Selo() {
             const qtdInt = parseInt(qtd);
 
             if (qtdInt > 0) {
-                api.put("/selos/adicionar-estoque" + id + "/" + qtdInt, {
+                api.put(`selos/adicionar-estoque/${selo.id}/${qtdInt}`, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                     },
@@ -387,7 +387,9 @@ export default function Selo() {
                                         </td>
                                         <td className="py-3 px-4 text-center text-xl border-b">
                                             <button
-                                                onClick={handleAdicionarEstoque}
+                                                onClick={() =>
+                                                    handleAdicionarEstoque(selo)
+                                                }
                                                 className="px-4 py-2 text-white bg-green-500 rounded-lg hover:bg-green-600 focus:outline-none"
                                             >
                                                 +
