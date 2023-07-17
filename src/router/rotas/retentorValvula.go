@@ -19,6 +19,12 @@ var rotasRetentorValvula = []Rota{
 		RequerAutenticacao: true,
 	},
 	{
+		URI:                "/retentorValvula/pagina/{pagina}",
+		Metodo:             http.MethodGet,
+		Funcao:             controllers.BuscarRetentoresValvulaPaginacao,
+		RequerAutenticacao: true,
+	},
+	{
 		URI:                "/retentorValvula/{retentorValvulaID}",
 		Metodo:             http.MethodGet,
 		Funcao:             controllers.BuscarRetentorValvulaPorID,
@@ -40,6 +46,12 @@ var rotasRetentorValvula = []Rota{
 		URI:                "/retentorValvula/nome/{nomeRetentorValvula}",
 		Metodo:             http.MethodGet,
 		Funcao:             controllers.BuscarRetentoresValvulaPorNome,
+		RequerAutenticacao: true,
+	},
+	{
+		URI:                "/retentorValvula/adicionar-estoque/{retentorValvulaID}",
+		Metodo:             http.MethodPut,
+		Funcao:             controllers.AdicionarEstoqueRetentorValvula,
 		RequerAutenticacao: true,
 	},
 }

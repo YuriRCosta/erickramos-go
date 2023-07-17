@@ -18,14 +18,14 @@ func NewRetentoresValvulaRepository(db *sql.DB) *RetentoresValvulaRepository {
 // Criar insere um retentoresValvula no banco de dados
 func (repositorio RetentoresValvulaRepository) Criar(retentoresValvula models.RetentorValvula) (uint64, error) {
 	statement, err := repositorio.db.Prepare(
-		"insert into retentores_valvulas (nome, preco, qtd_estoque) values (?, ?, ?)",
+		"insert into retentores_valvulas (nome, preco, qtd_estoque, codigo) values (?, ?, ?, ?)",
 	)
 	if err != nil {
 		return 0, err
 	}
 	defer statement.Close()
 
-	resultado, err := statement.Exec(retentoresValvula.Nome, retentoresValvula.Preco, retentoresValvula.Qtd_estoque)
+	resultado, err := statement.Exec(retentoresValvula.Nome, retentoresValvula.Preco, retentoresValvula.Qtd_estoque, retentoresValvula.Codigo)
 	if err != nil {
 		return 0, err
 	}
@@ -64,6 +64,38 @@ func (repositorio RetentoresValvulaRepository) BuscarRetentoresValvula() ([]mode
 			return nil, err
 		}
 
+		retentoresValvula = append(retentoresValvula, retentorValvula)
+	}
+
+	return retentoresValvula, nil
+}
+
+// BuscarRetentoresValvulaPaginacao traz todos os retentoresValvula registrados no banco de dados com paginação
+func (repositorio RetentoresValvulaRepository) BuscarRetentoresValvulaPaginacao(pagina int64) ([]models.RetentorValvula, error) {
+	offset := (pagina - 1) * 5
+
+	linhas, err := repositorio.db.Query(
+		"select id, codigo, nome, preco, qtd_estoque from retentores_valvulas limit 5 offset ?",
+		offset,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer linhas.Close()
+
+	var retentoresValvula []models.RetentorValvula
+	for linhas.Next() {
+		var retentorValvula models.RetentorValvula
+
+		if err = linhas.Scan(
+			&retentorValvula.ID,
+			&retentorValvula.Codigo,
+			&retentorValvula.Nome,
+			&retentorValvula.Preco,
+			&retentorValvula.Qtd_estoque,
+		); err != nil {
+			return nil, err
+		}
 		retentoresValvula = append(retentoresValvula, retentorValvula)
 	}
 
@@ -165,4 +197,21 @@ func (repositorio RetentoresValvulaRepository) BuscarRetentoresValvulaPorNome(no
 	}
 
 	return retentoresValvula, nil
+}
+
+// AdicionarEstoque soma a quantidade de estoque de um retentoresValvula
+func (repositorio RetentoresValvulaRepository) AdicionarEstoque(ID uint64, quantidade uint64) error {
+	statement, err := repositorio.db.Prepare(
+		"update retentores_valvulas set qtd_estoque = qtd_estoque + ? where id = ?",
+	)
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err = statement.Exec(quantidade, ID); err != nil {
+		return err
+	}
+
+	return nil
 }
