@@ -70,6 +70,40 @@ func (repositorio Valvulas) BuscarValvulas() ([]models.Valvula, error) {
 	return valvulas, nil
 }
 
+// BuscarValvulasPorPagina traz todos os valvulas registrados no banco de dados de acordo com a paginação
+func (repositorio Valvulas) BuscarValvulasPorPagina(pagina uint64) ([]models.Valvula, error) {
+	offset := (pagina - 1) * 5
+	linhas, err := repositorio.db.Query(
+		"select id, codigo, nome, preco, qtd_estoque, tipo from valvulas limit 5 offset ?",
+		offset,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer linhas.Close()
+
+	var valvulas []models.Valvula
+
+	for linhas.Next() {
+		var valvula models.Valvula
+
+		if err = linhas.Scan(
+			&valvula.ID,
+			&valvula.Codigo,
+			&valvula.Nome,
+			&valvula.Preco,
+			&valvula.Qtd_estoque,
+			&valvula.Tipo,
+		); err != nil {
+			return nil, err
+		}
+
+		valvulas = append(valvulas, valvula)
+	}
+
+	return valvulas, nil
+}
+
 // BuscarValvulaPorID traz um valvula do banco de dados
 func (repositorio Valvulas) BuscarValvulaPorID(ID uint64) (models.Valvula, error) {
 	linha, err := repositorio.db.Query(
@@ -198,4 +232,19 @@ func (repositorio Valvulas) BuscarValvulaPorTipo(tipo string) ([]models.Valvula,
 	}
 
 	return valvulas, nil
+}
+
+// AdicionarEstoqueValvula adiciona uma determinada quantidade de estoque a um valvula
+func (repositorio Valvulas) AdicionarEstoqueValvula(ID uint64, quantidade uint64) error {
+	statement, err := repositorio.db.Prepare("update valvulas set qtd_estoque = qtd_estoque + ? where id = ?")
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err = statement.Exec(quantidade, ID); err != nil {
+		return err
+	}
+
+	return nil
 }

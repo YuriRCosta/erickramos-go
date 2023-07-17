@@ -49,6 +49,7 @@ export default function Selo() {
             },
         });
         setSelos(response.data);
+        carregarTodosSelos();
     }
 
     const handleMedidaChange = (e) => {
@@ -70,6 +71,7 @@ export default function Selo() {
                     const resultado = response.data;
                     console.log(resultado);
                     setSelos(resultado);
+                    setTodosSelos(0);
                 })
                 .catch((error) => {
                     console.error(error);
@@ -84,6 +86,7 @@ export default function Selo() {
                     const resultado = response.data;
                     console.log(resultado);
                     setSelos(resultado);
+                    setTodosSelos(0);
                 })
                 .catch((error) => {
                     console.error(error);
@@ -105,7 +108,7 @@ export default function Selo() {
                     Authorization: `Bearer ${accessToken}`,
                 },
             });
-            setSelos(selos.filter((selo) => selo.id !== id));
+            carregarSelos(1);
         } catch (e) {
             alert("Falha ao deletar selo, tente novamente.");
         }
@@ -160,7 +163,7 @@ export default function Selo() {
                 },
             })
                 .then((response) => {
-                    carregarSelos();
+                    carregarSelos(1);
 
                     setId("");
                     setNome("");
@@ -193,7 +196,7 @@ export default function Selo() {
                     },
                 })
                     .then((response) => {
-                        carregarSelos();
+                        carregarSelos(1);
                     })
                     .catch((error) => {
                         console.error(error);
@@ -221,7 +224,8 @@ export default function Selo() {
                 },
             })
                 .then((response) => {
-                    setSelos([...selos, response.data]);
+                    carregarTodosSelos();
+                    carregarSelos(1);
 
                     setId("");
                     setNome("");
@@ -294,7 +298,7 @@ export default function Selo() {
                                 Pesquisar
                             </button>
                             <button
-                                onClick={carregarSelos}
+                                onClick={() => carregarSelos(1)}
                                 className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none"
                             >
                                 Mostrar Todos
@@ -431,9 +435,9 @@ export default function Selo() {
                         onPageChange={handlePageChange}
                         containerClassName={"flex justify-center mt-4"}
                         pageClassName={
-                            "py-1 px-3 cursor-pointer rounded-lg bg-gray-700 text-gray-700 mx-1"
+                            "py-1 px-3 cursor-pointer rounded-lg bg-blue-600 text-gray-100 mx-1"
                         }
-                        activeClassName={"bg-blue-400 text-white"}
+                        activeClassName={"bg-gray-400 text-white"}
                         previousClassName={
                             "py-1 px-3 cursor-pointer rounded-lg bg-blue-600 text-gray-100"
                         }
@@ -441,7 +445,7 @@ export default function Selo() {
                             "py-1 px-3 cursor-pointer rounded-lg bg-blue-600 text-gray-100"
                         }
                         disabledClassName={
-                            "py-1 px-3 rounded-lg bg-gray-700 text-gray-100 cursor-not-allowed"
+                            "py-1 px-3 rounded-lg bg-gray-400 text-gray-100 cursor-not-allowed"
                         }
                     />
                     <div className="flex justify-center mt-6">

@@ -19,6 +19,12 @@ var rotasValvulas = []Rota{
 		RequerAutenticacao: true,
 	},
 	{
+		URI:                "/valvulas/pagina/{pagina}",
+		Metodo:             http.MethodGet,
+		Funcao:             controllers.BuscarValvulasPagina,
+		RequerAutenticacao: true,
+	},
+	{
 		URI:                "/valvulas/{valvulaID}",
 		Metodo:             http.MethodGet,
 		Funcao:             controllers.BuscarValvulaPorID,
@@ -46,6 +52,12 @@ var rotasValvulas = []Rota{
 		URI:                "/valvulas/tipo/{tipoValvula}",
 		Metodo:             http.MethodGet,
 		Funcao:             controllers.BuscarValvulaPorTipo,
+		RequerAutenticacao: true,
+	},
+	{
+		URI:                "/valvulas/adicionar-estoque/{valvulaID}",
+		Metodo:             http.MethodPut,
+		Funcao:             controllers.AdicionarEstoqueValvula,
 		RequerAutenticacao: true,
 	},
 }

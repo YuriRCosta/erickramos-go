@@ -63,6 +63,36 @@ func BuscarValvulas(w http.ResponseWriter, r *http.Request) {
 	respostas.JSON(w, http.StatusOK, valvulas)
 }
 
+// BuscarValvulasPagina busca todas as valvulas por paginação
+func BuscarValvulasPagina(w http.ResponseWriter, r *http.Request) {
+	parametros := mux.Vars(r)
+	pagina, err := strconv.ParseUint(parametros["pagina"], 10, 64)
+	if err != nil {
+		respostas.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if pagina <= 0 {
+        pagina = 1
+    }
+
+	db, err := banco.Conectar()
+	if err != nil {
+		respostas.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repositorio := repositories.NovoRepositorioDeValvulas(db)
+	valvulas, err := repositorio.BuscarValvulasPorPagina(pagina)
+	if err != nil {
+		respostas.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	respostas.JSON(w, http.StatusOK, valvulas)
+}
+
 // BuscarValvulaPorID busca um valvula salvo no banco de dados pelo seu ID
 func BuscarValvulaPorID(w http.ResponseWriter, r *http.Request) {
 	parametros := mux.Vars(r)
@@ -193,4 +223,41 @@ func BuscarValvulaPorTipo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	respostas.JSON(w, http.StatusOK, valvula)
+}
+
+// AdicionarEstoqueValvula adiciona estoque a um valvula no banco de dados
+func AdicionarEstoqueValvula(w http.ResponseWriter, r *http.Request) {
+	parametros := mux.Vars(r)
+	valvulaID, err := strconv.ParseUint(parametros["valvulaID"], 10, 64)
+	if err != nil {
+		respostas.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	corpoRequisicao, erro := ioutil.ReadAll(r.Body)
+	if erro != nil {
+		respostas.Erro(w, http.StatusUnprocessableEntity, erro)
+		return
+	}
+
+	var estoque models.Valvula
+	if erro = json.Unmarshal(corpoRequisicao, &estoque); erro != nil {
+		respostas.Erro(w, http.StatusBadRequest, erro)
+		return
+	}
+
+	db, erro := banco.Conectar()
+	if erro != nil {
+		respostas.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+	defer db.Close()
+
+	repositorio := repositories.NovoRepositorioDeValvulas(db)
+	if erro = repositorio.AdicionarEstoqueValvula(valvulaID, uint64(estoque.Qtd_estoque)); erro != nil {
+		respostas.Erro(w, http.StatusInternalServerError, erro)
+		return
+	}
+
+	respostas.JSON(w, http.StatusNoContent, nil)
 }
